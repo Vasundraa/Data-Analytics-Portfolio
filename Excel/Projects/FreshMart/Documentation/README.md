@@ -347,18 +347,61 @@ identify associations rather than claim causation.
 -   Add a dedicated Return Rate or return-pattern visual after
     confirming Return_Status definitions.
 
-## Repository Contents
+## Repository / Portfolio Structure
 
-Recommended GitHub repository structure:
+The FreshMart project is organized within the Data Analytics portfolio as follows:
 
-``` text
-FreshMart-Sales-Dashboard/
+```text
+Data-Analytics-Portfolio/
 │
-├── FreshMart_Dashboard.xlsx
-├── business_insights.pdf
 ├── README.md
-└── FreshMart_BRD.docx        # optional reference document
+│
+└── Excel/
+    │
+    └── Projects/
+        │
+        └── FreshMart/
+            │
+            ├── Source/
+            │   ├── Raw/
+            │   │   ├── Sales_Transactions.xlsx
+            │   │   ├── Customers.xlsx
+            │   │   ├── Products.xlsx
+            │   │   ├── Stores.xlsx
+            │   │   ├── Employees.xlsx
+            │   │   └── Suppliers.xlsx
+            │   │
+            │   └── Cleaned/
+            │       ├── Sales_Cleaned.xlsx
+            │       ├── Customers_Cleaned.xlsx
+            │       ├── Products_Cleaned.xlsx
+            │       ├── Stores_Cleaned.xlsx
+            │       ├── Employees_Cleaned.xlsx
+            │       └── Suppliers_Cleaned.xlsx
+            │
+            ├── Final_Project/
+            │   └── FreshMart_Analytics_Project.xlsx
+            │
+            ├── Dashboard/
+            │   └── Dashboard_Screenshot.png
+            │
+            └── Documentation/
+                ├── Business_Insights.pdf
+                └── README.md
 ```
+
+### Folder Purpose
+
+| Folder / File | Purpose |
+|---|---|
+| `Source/Raw/` | Original FreshMart datasets used as the source data |
+| `Source/Cleaned/` | Cleaned and prepared datasets after data-quality and transformation work |
+| `Final_Project/` | Final Excel workbook containing the completed FreshMart analysis and dashboard |
+| `Dashboard/` | Dashboard screenshot for quick visual reference |
+| `Documentation/` | Business insights and project documentation |
+| `Business_Insights.pdf` | Stakeholder-focused business insights, recommendations, validation notes and limitations |
+| `README.md` | Project overview, methodology, dashboard explanation, BRD alignment and documentation |
+
 
 ## Project Deliverables
 

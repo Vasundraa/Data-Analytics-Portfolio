@@ -1,37 +1,37 @@
 # TrendKart --- Profitability Leakage Analysis Dashboard
 
-## 1. Project Overview
+> **Excel Business Intelligence Project \| Fashion Retail \|
+> Profitability Analysis**
 
-**TrendKart Profitability Leakage Analysis** is an Excel-based business
-intelligence project developed for fashion retail management.
+TrendKart is an Excel-based business intelligence project developed to
+investigate whether strong sales activity is translating into
+sustainable profitability.
 
-The project transforms transactional and master data into an
-**interactive management dashboard** focused on a central business
-question:
+The project transforms transactional and master data into an interactive
+management dashboard focused on the core business question:
 
 > **Where is TrendKart losing potential profitability despite generating
 > sales, and which business areas require management attention?**
 
-The dashboard is designed around the requirements in the supplied
-**TrendMart Business Requirements Document (BRD)**, with emphasis on
-sales vs. profitability, product/category performance, discount-related
-profitability patterns, returns, regional/store performance, channel
-performance, and management decision support.
+The project is aligned with the supplied **TrendMart Business
+Requirements Document (BRD)**, which requires analysis of sales,
+profitability, products, categories, discounts, returns, stores,
+regions, channels, customer segments, and relevant fashion attributes.
 
 ------------------------------------------------------------------------
 
-## 2. Business Problem
+## 1. Business Problem
 
 TrendKart generates sales across products, stores, regions, customers,
-and sales channels. However, revenue alone does not provide a complete
-view of business performance.
+and sales channels. Revenue alone is not sufficient to evaluate business
+performance.
 
-The analysis therefore focuses on identifying situations where:
+The analysis focuses on identifying situations where:
 
 -   High sales are not accompanied by proportionate profit.
 -   Discount levels are associated with weaker profitability.
 -   Certain categories show unusually high return rates.
--   Store/region performance differs in terms of sales and margin.
+-   Store and regional performance differs in terms of sales and margin.
 -   Channel mix influences the overall commercial picture.
 -   Specific products or categories require further investigation.
 
@@ -40,13 +40,14 @@ be treated as **associations rather than proven causal effects**.
 
 ------------------------------------------------------------------------
 
-## 3. Project Objectives
+## 2. Project Objectives
 
 The dashboard aims to:
 
 1.  Monitor overall sales, profit, profit margin, transaction volume,
-    and quantity.
-2.  Identify high-performing and comparatively weak products/categories.
+    and returns.
+2.  Identify high-performing and comparatively weak products and
+    categories.
 3.  Compare sales contribution with profitability.
 4.  Investigate discount levels alongside profit margin.
 5.  Identify return-rate patterns across categories.
@@ -57,187 +58,204 @@ The dashboard aims to:
 
 ------------------------------------------------------------------------
 
+## 3. Repository Structure
+
+The following structure matches the final TrendKart project organization used in the GitHub repository.
+
+``` text
+Trendkart/
+│
+├── Dashboard/
+│   └── Dashboard_Screenshot.png
+│
+├── Documentation/
+│   ├── README.md
+│   └── Business_Insights.pdf
+│
+└── Source/
+    ├── Raw/
+    │   └── TrendKart_Fashion_Enterprise_Dataset.xlsx
+    │
+    └── Cleaned/
+        └── TrendKart_Fashion_Enterprise_Dataset_Cleaned.xlsx
+```
+
+  Folder              Purpose
+  ------------------- -------------------------------------
+  `Dashboard/`        Final dashboard screenshot
+  `Documentation/`    README and business-insights report
+  `Source/Raw/`       Original supplied dataset
+  `Source/Cleaned/`   Cleaned analytical dataset
+
+### Source File Handling
+
+The repository keeps the data in two clearly separated folders:
+
+- **Raw** — `TrendKart_Fashion_Enterprise_Dataset.xlsx` is the original source dataset.
+- **Cleaned** — `TrendKart_Fashion_Enterprise_Dataset_Cleaned.xlsx` is the cleaned version used for analysis and dashboard development.
+
+The raw dataset is retained for traceability, while the cleaned dataset is used for analytical work. Source records were not blindly deleted; data-quality issues were reviewed and handled according to the business requirements.
+
+------------------------------------------------------------------------
+
 ## 4. Data Used
 
-The workbook contains the following major datasets:
+  ------------------------------------------------------------------------
+  Dataset                            Approx. Records Business Use
+  --------------------- ---------------------------- ---------------------
+  Sales Transactions                           3,000 Sales, cost, profit,
+                                                     discount, returns,
+                                                     payment, channel and
+                                                     quantity
 
-  -----------------------------------------------------------------------
-  Dataset                             Business Use
-  ----------------------------------- -----------------------------------
-  **Sales_Transactions**              Sales, cost, profit, discount,
-                                      return, payment, channel, quantity
-                                      and transaction analysis
+  Customers                                      850 Customer demographics
+                                                     and membership
 
-  **Products**                        Product, category, brand, size,
-                                      color, material and pricing
-                                      attributes
+  Products                                       250 Category, brand,
+                                                     size, color, material
+                                                     and product
+                                                     attributes
 
-  **Customers**                       Customer demographics and
-                                      membership information
+  Stores                                         120 Store, region and
+                                                     store-type analysis
 
-  **Stores**                          Store, region and store-type
-                                      information
+  Employees                                      300 Employee/store
+                                                     association
 
-  **Employees**                       Employee/store association
+  Suppliers                                       90 Supplier context
 
-  **Suppliers**                       Supplier context
-  -----------------------------------------------------------------------
+  Data Quality Log                               --- Data-quality review
+                                                     and validation
+                                                     guidance
+  ------------------------------------------------------------------------
 
-### Current transaction scope
+**Analysis period:** April 2024 -- March 2025
 
--   **3,000 sales transaction records**
--   **250 products**
--   **850 customers**
--   **120 stores**
--   Analysis period: **April 2024 -- March 2025**
-
-------------------------------------------------------------------------
-
-## 5. Data Preparation & Quality Handling
-
-The BRD requires data-quality issues to be investigated before analysis.
-The project therefore checked transaction identifiers, missing
-attributes, data types, relationships, return status, quantity and
-profitability fields.
-
-Key observations from the final workbook:
-
--   **5 duplicate Invoice No values** were identified, representing **10
-    transaction rows**.
--   These records were **not automatically deleted**, because the BRD
-    requires valid business events to be preserved unless a documented
-    reason supports removal.
--   **6 transactions have blank Customer_ID values**.
--   **5 transactions have blank Employee_ID values**.
--   **5 sales transactions do not match a Product_ID in the Products
-    table**, resulting in missing product/category attributes for those
-    records.
--   **57 transactions have zero quantity** and were retained for
-    contextual review rather than automatically removed.
--   **No negative-profit transactions** were found in the current sales
-    data.
--   Return Status was checked using the available `Returned` /
-    `Not Returned` definition.
-
-### Treatment principle
-
-Data-quality observations were retained or excluded from specific
-visuals only where appropriate. The source transaction population was
-not arbitrarily reduced simply to improve dashboard appearance.
-
-------------------------------------------------------------------------
-
-## 6. Analytical Methodology
-
-The project follows this workflow:
-
-**Business Requirements → Data Inspection → Data Cleaning & Validation →
-Dataset Relationships → Calculated Measures/KPIs → PivotTables →
-PivotCharts → Interactive Slicers → Dashboard → Business Insights**
-
-Related datasets were connected using common identifiers such as:
+### Key dataset relationships
 
 -   `Customer_ID`
 -   `Product_ID`
 -   `Store_ID`
 -   `Employee_ID`
-
-Product, customer and store attributes were used to enrich
-transaction-level analysis.
+-   `Supplier_ID`
 
 ------------------------------------------------------------------------
 
-## 7. Executive KPIs
+## 5. Data Preparation & Quality Handling
 
-The dashboard displays five primary KPI cards:
+Data-quality review was an explicit BRD requirement.
+
+The project reviewed duplicate identifiers, missing IDs, dates, numeric
+values, inconsistent status/attribute values, negative-profit and
+zero-quantity records, dataset relationships, and Return Status.
+
+### Key observations
+
+-   **3,000** sales transaction records.
+-   **5 duplicate Invoice No values**, representing 10 transaction rows.
+-   Duplicate records were not automatically deleted because duplicate
+    identifiers do not by themselves prove invalid business events.
+-   **6 transactions** have blank `Customer_ID`.
+-   **5 transactions** have blank `Employee_ID`.
+-   **5 transactions** have unmatched `Product_ID` values and therefore
+    missing product/category attribution.
+-   **57 transactions** have zero quantity and were retained for
+    contextual review.
+-   No negative-profit transactions were identified in the final sales
+    data.
+-   `Return Status` was reviewed using the available `Returned` /
+    `Not Returned` definition.
+
+Valid business events were not removed simply to improve dashboard
+appearance.
+
+------------------------------------------------------------------------
+
+## 6. Executive KPIs
 
   ------------------------------------------------------------------------
-  KPI                                  Current Value Definition
+  KPI                                          Value Definition
   --------------------- ---------------------------- ---------------------
-  **Total Sales**                      ₹9,227,179.96 Total Sales Amount
+  **Total Sales**                         ₹92,27,180 Total Sales Amount
 
-  **Total Profit**                     ₹1,828,721.60 Total Profit
+  **Total Profit**                        ₹18,28,722 Total Profit
 
-  **Profit Margin %**                         19.82% Total Profit / Total
+  **Profit Margin %**                         19.82% Total Profit ÷ Total
                                                      Sales
 
   **Total Orders**                             3,000 Transaction records
-                                                     represented in the
+                                                     represented in
                                                      dashboard
 
   **Return Rate %**                            4.87% Returned transactions
-                                                     / total transactions
+                                                     ÷ total transactions
   ------------------------------------------------------------------------
-
-### KPI note
 
 The BRD also identifies Total Cost, Total Quantity Sold, Average
 Transaction Value, Total Discount and Average Discount % as useful
-measures. The current dashboard prioritizes the five KPI cards above;
-supporting measures remain available in the analytical workbook where
-applicable.
+measures. The current dashboard prioritizes the five cards above for the
+executive view.
 
 ------------------------------------------------------------------------
 
-## 8. Dashboard Visuals
+## 7. Dashboard Visuals
 
 ### 1. How are sales and profit changing over time?
 
-Monthly sales and profit trend from April 2024 to March 2025.
+Monthly Sales Amount and Profit from April 2024 to March 2025.
 
 **Purpose:** Identify stronger/weaker periods and compare revenue
 activity with profitability.
 
 ### 2. Which products contribute most to sales and profit?
 
-Top-product comparison using Sales Amount and Profit.
+Top products compared using Sales Amount and Profit.
 
-**Purpose:** Identify products that contribute strongly to revenue and
-determine whether their profit contribution is proportionate.
+**Purpose:** Determine whether high revenue contribution is accompanied
+by proportionate profit.
 
 ### 3. Are higher discounts associated with lower profitability?
 
 Discount percentage compared with Profit Margin %.
 
-**Purpose:** Investigate profitability leakage associated with discount
-intensity.
+**Purpose:** Investigate potential profitability leakage associated with
+discount intensity.
 
-**Interpretation rule:** The chart identifies an association; it does
-not establish that discounts cause lower profit.
+**Interpretation:** The chart shows an association; it does not prove
+that discounts cause lower profit.
 
 ### 4. Which categories contribute most to sales and profit?
 
 Category-level Sales Amount and Profit comparison.
 
-**Purpose:** Identify commercially strong categories and compare revenue
-with profit contribution.
+**Purpose:** Identify commercially strong categories while
+distinguishing revenue from profitability.
 
 ### 5. Which categories have the highest return rates?
 
-Category return-rate analysis.
+Category-level return-rate comparison.
 
-**Purpose:** Identify categories requiring investigation because of
-comparatively high return incidence.
+**Purpose:** Identify categories requiring further investigation because
+of high return incidence.
 
 ### 6. Which regions are more profitable relative to their sales?
 
 Regional Sales Amount with Profit Margin %.
 
-**Purpose:** Distinguish high sales from high profitability and identify
-regions with stronger/weaker margins.
+**Purpose:** Distinguish sales scale from profitability efficiency.
 
 ### 7. What share of sales comes from each channel?
 
-Online vs Offline sales contribution.
+Online versus Offline sales contribution.
 
 **Purpose:** Understand channel concentration and commercial
 contribution.
 
 ------------------------------------------------------------------------
 
-## 9. Interactive Slicers
+## 8. Interactive Slicers
 
-The final dashboard includes:
+The completed dashboard contains six connected slicers:
 
 -   **Membership**
 -   **Brand**
@@ -246,175 +264,176 @@ The final dashboard includes:
 -   **Material**
 -   **Gender**
 
-These filters allow management to investigate whether performance
-patterns change across customer segments, product characteristics, store
-formats, payment methods, and customer demographics.
+These filters allow management to investigate customer segments,
+demographics, product characteristics, store formats, and payment
+patterns.
 
-The slicers are connected to the relevant PivotTables so that the
-dashboard can be explored interactively.
+Category, region, discount, returns and sales channel are represented
+directly through dedicated visuals, avoiding unnecessary duplication.
 
 ------------------------------------------------------------------------
 
-## 10. Key Business Findings
+# 9. Key Business Findings
 
-### Overall performance
+## Overall Performance
 
 TrendKart generated:
 
--   **₹92.27 lakh in sales**
--   **₹18.29 lakh in profit**
--   **19.82% overall profit margin**
--   **3,000 transaction records**
--   **6,100 units sold**
--   **4.87% return rate**
+-   **₹92.27 lakh** in sales
+-   **₹18.29 lakh** in profit
+-   **19.82%** overall profit margin
+-   **3,000** transaction records
+-   **6,100** units sold
+-   **4.87%** return rate
 
-### Product performance
+## Product Performance
 
-The highest-sales product is **GRT Jewellers Sling Bag Olive**,
-generating approximately **₹483,225.47** in sales and **₹114,878.08** in
-profit.
+The highest-sales product in the current ranking is **GRT Jewellers
+Sling Bag Olive**, generating approximately **₹4.83 lakh sales** and
+**₹1.15 lakh profit**.
 
-The product comparison demonstrates that high sales should not
-automatically be interpreted as high profitability.
+High sales should not automatically be interpreted as high
+profitability.
 
-### Category performance
+## Category Performance
 
-The leading categories by sales are:
+Top categories by sales:
 
-1.  **Women Sarees --- ₹1,103,017.82**
-2.  **Handbags --- ₹994,021.98**
-3.  **Watches --- ₹937,502.18**
+1.  **Women Sarees** --- approximately ₹11.03 lakh
+2.  **Handbags** --- approximately ₹9.94 lakh
+3.  **Watches** --- approximately ₹9.38 lakh
 
-Among the larger categories, **Women Dresses** has a comparatively lower
-margin of about **17.14%**, indicating an area worth investigating
-rather than concluding that the category is inherently underperforming.
+## Returns
 
-### Returns
+The overall return rate is approximately **4.87%**.
 
-**Handbags** has the highest category return rate at approximately
-**28.29%**, substantially above the overall transaction return rate of
-**4.87%**.
+**Handbags** is a major return-rate outlier at approximately **28.29%**,
+making it a priority for investigation.
 
-This is a strong investigation priority because return incidence is
-concentrated rather than evenly distributed across categories.
+The dashboard identifies the pattern but does not establish the cause.
 
-### Discounting
+## Discount & Profitability
 
-Profit margin declines as the displayed discount levels increase:
+    Discount   Profit Margin
+  ---------- ---------------
+          0%          28.45%
+          5%          25.14%
+         10%          21.52%
+         15%          16.85%
+         20%          12.84%
+         25%           7.95%
+         30%           3.95%
 
--   0% discount: **28.45%**
--   10% discount: **21.52%**
--   20% discount: **12.84%**
--   30% discount: **3.95%**
+Profit margin declines from **28.45% at 0% discount** to **3.95% at 30%
+discount**.
 
-This is an **observed association** and should not be presented as proof
-that discounting causes lower profitability.
+This is an observed **association**, not proof that discounting causes
+lower profitability.
 
-### Regional performance
+## Regional Performance
 
-**South Zone 3** has the highest regional profit margin at approximately
-**20.28%**, despite having the lowest sales among the three regions.
+  Region                 Sales   Profit Margin
+  -------------- ------------- ---------------
+  South Zone 1     ₹44.63 lakh          19.74%
+  South Zone 2     ₹25.55 lakh          19.55%
+  South Zone 3     ₹22.09 lakh          20.28%
 
-This demonstrates why management should evaluate **sales and
-profitability together**.
+South Zone 1 contributes the highest sales, while South Zone 3 has the
+highest profit margin despite the lowest sales among the three regions.
 
-### Channel performance
+## Sales Channel Performance
 
--   **Offline:** 65.55% of sales
--   **Online:** 34.45% of sales
+-   **Offline:** approximately ₹60.49 lakh (**65.56%**)
+-   **Online:** approximately ₹31.78 lakh (**34.44%**)
 
-Profit margins are very similar across channels, so the key insight is
-**sales mix/concentration rather than a major channel-margin gap**.
-
-------------------------------------------------------------------------
-
-## 11. Management Recommendations
-
-### 1. Investigate high-return categories
-
-Prioritize **Handbags** for deeper review of return reasons, product
-quality, sizing/description accuracy, customer expectations, and
-operational handling.
-
-### 2. Review discount strategy
-
-Investigate products/categories/stores where high discount levels
-coincide with weaker margins. The objective should be to understand
-whether discount intensity is commercially justified.
-
-### 3. Protect high-revenue products with healthy margins
-
-Identify products that combine strong sales with strong margin and
-ensure they receive appropriate inventory, merchandising and promotional
-attention.
-
-### 4. Investigate high-sales/low-margin areas
-
-Revenue leaders should be reviewed alongside profit and margin to
-identify potential profitability leakage.
-
-### 5. Learn from South Zone 3
-
-South Zone 3 demonstrates that lower sales volume can still produce the
-strongest margin. Management can investigate which product mix, customer
-mix, store characteristics or commercial practices are associated with
-this outcome.
-
-### 6. Maintain channel balance
-
-Offline contributes the majority of sales, while Online remains a
-substantial secondary channel. Channel-level profitability should
-continue to be monitored as the sales mix changes.
+Channel margins are very similar, so the dashboard emphasizes sales mix
+rather than a redundant channel-margin visual.
 
 ------------------------------------------------------------------------
 
-## 12. BRD Alignment
+# 10. Management Recommendations
 
-  ------------------------------------------------------------------------
-  BRD Requirement                      Dashboard Coverage
-  ------------------------------------ -----------------------------------
-  Overall                              **Covered** through KPIs and trend
-  sales/profit/transactions/quantity   analysis
+### 1. Investigate Handbags Returns
 
-  Sales vs profitability               **Covered**
+Review return reasons, product quality, sizing/description accuracy,
+customer expectations, and operational handling.
 
-  High-sales/low-profit products       **Covered**
+### 2. Review High-Discount Transactions
 
-  Category/product/brand performance   **Covered**
+Investigate products, categories, stores and channels where high
+discount levels coincide with weaker margins.
 
-  Discount vs profitability            **Covered**
+### 3. Protect Profitable High-Volume Products
 
-  Return patterns                      **Covered** through category
-                                       return-rate analysis
+Identify products combining strong sales and healthy profit and ensure
+appropriate inventory, visibility, merchandising and promotional
+support.
 
-  Store/region comparison              **Covered** through regional
-                                       analysis and Store Type filtering
+### 4. Investigate High-Sales / Low-Margin Areas
 
-  Online vs Offline performance        **Covered**
+Review revenue leaders alongside profit and margin to identify potential
+profitability leakage.
 
-  Customer/membership analysis         **Partially supported** through
-                                       Membership/Gender slicers; no
-                                       dedicated customer chart
+### 5. Study South Zone 3 Practices
 
-  Size/color/material patterns         **Partially supported** through
-                                       Material filtering; no dedicated
-                                       attribute chart
+Investigate product mix, store characteristics, customer mix and
+commercial practices that may be associated with its stronger margin.
 
-  Employee contribution                **Not directly visualized**
+### 6. Validate Transaction Identifiers
 
-  Supplier context                     **Not directly visualized**
+The presence of duplicate invoice numbers should be validated before
+using invoice numbers as the formal basis for order-count reporting.
 
-  Store target achievement             **Not concluded**, because
-                                       target-period alignment requires
-                                       validation
-  ------------------------------------------------------------------------
+### 7. Extend Customer and Product Analysis
+
+Future analysis can expand into customer segments, employee
+contribution, size, color, material, store targets and supplier context
+where the data supports reliable conclusions.
+
+------------------------------------------------------------------------
+
+# 11. BRD Alignment
+
+  -----------------------------------------------------------------------
+  BRD Requirement                     Dashboard Coverage
+  ----------------------------------- -----------------------------------
+  Overall sales/profit/transaction    ✅ Covered
+  performance                         
+
+  Sales vs. profitability             ✅ Covered
+
+  High-sales/low-profit products      ✅ Covered
+
+  Category/product/brand performance  ✅ Covered
+
+  Discount vs. profitability          ✅ Covered
+
+  Return patterns                     ✅ Covered
+
+  Store/region comparison             ✅ Covered
+
+  Online vs. Offline performance      ✅ Covered
+
+  Customer/membership analysis        🟡 Partially supported through
+                                      slicers
+
+  Size/color/material patterns        🟡 Partially supported through
+                                      Material filtering
+
+  Employee contribution               Not directly visualized
+
+  Supplier context                    Not directly visualized
+
+  Store target achievement            Not concluded; target-period
+                                      alignment requires validation
+  -----------------------------------------------------------------------
 
 The dashboard follows the BRD requirement to prioritize management
 decisions and avoid decorative or redundant visuals.
 
 ------------------------------------------------------------------------
 
-## 13. Limitations & Assumptions
+# 12. Limitations & Assumptions
 
 -   Duplicate invoice identifiers were identified and retained pending
     business validation.
@@ -424,37 +443,31 @@ decisions and avoid decorative or redundant visuals.
     and are excluded from product/category attribution where no valid
     match exists.
 -   Return Rate depends on the available `Return Status` definition.
--   Relationships between discounts and profitability are described as
-    associations, not causal effects.
--   Store target comparisons should only be made after validating
-    target-period alignment.
--   Customer, employee and supplier analyses are not represented as
+-   Discount-profitability relationships are described as associations,
+    not causal effects.
+-   Store target comparisons require target-period alignment validation.
+-   Customer, employee and supplier analyses are not represented through
     dedicated dashboard visuals.
 -   Predictive forecasting and machine learning are outside the current
     scope.
 
 ------------------------------------------------------------------------
 
-## 14. Repository Structure
+# 13. Project Deliverables
 
-A recommended GitHub repository structure is:
-
-``` text
-TrendKart-Excel-Dashboard/
-│
-├── README.md
-├── Trendkart_Dashboard(2).xlsx
-├── TrendKart_Business_Insights.pdf
-│
-└── assets/
-    └── dashboard-screenshot.png
-```
+-   [Dashboard Screenshot](../Dashboard/Dashboard_Screenshot.png)
+-   [Business Insights Report](./Business_Insights.pdf)
+-   [Cleaned
+    Dataset](../Source/Cleaned/TrendKart_Fashion_Enterprise_Dataset_Cleaned.xlsx)
+-   [Raw
+    Dataset](../Source/Raw/TrendKart_Fashion_Enterprise_Dataset.xlsx)
 
 ------------------------------------------------------------------------
 
-## 15. Tools & Skills Demonstrated
+# 14. Tools & Skills Demonstrated
 
 -   Microsoft Excel
+-   Power Query / data preparation
 -   PivotTables
 -   PivotCharts
 -   Excel formulas and calculated measures
@@ -471,21 +484,36 @@ TrendKart-Excel-Dashboard/
 
 ------------------------------------------------------------------------
 
-## 16. Conclusion
+# 15. Conclusion
 
 The TrendKart dashboard provides a consolidated management view of
 sales, profitability and potential profitability leakage.
 
 Its main value is that it moves beyond revenue reporting and helps
-management ask:
+management answer:
 
 > **Are strong sales translating into strong profitability?**
 
-The dashboard highlights areas requiring further investigation,
-particularly discount-related margin patterns, high-return categories,
-high-sales/low-margin products and regional differences in
+The analysis highlights discount-related margin patterns, high-return
+categories, high-sales/low-margin products and regional differences in
 profitability.
 
-The analysis is designed to support **evidence-based management
-decisions**, while clearly separating observed patterns from unsupported
-causal conclusions.
+The dashboard is designed as a **decision-support tool**: it highlights
+meaningful patterns and investigation priorities while clearly
+separating observed associations from proven causal relationships.
+
+------------------------------------------------------------------------
+
+## Project Status
+
+**Completed**
+
+-   Data preparation and quality review
+-   Dataset relationships
+-   KPI calculations
+-   Pivot-based analysis
+-   Interactive dashboard
+-   Connected slicers
+-   Business insights
+-   Management recommendations
+-   Project documentation
