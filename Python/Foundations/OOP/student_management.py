@@ -23,7 +23,7 @@ def checkRecords(stuNum,stds):
             print(f"Invalid Student Number Choice. Student Number should be between 1 to {len(stds)}")
             return False
     else:
-        print("No Student Records Available")
+        print("No Student Records Available To Display")
         
 
 stds=[]
@@ -48,17 +48,13 @@ while True:
 
         elif(choice==2):
             stuNum=int(input("Enter Student Number:"))
-            if(stuNum>=1 and stuNum<=len(stds)):
+            if(checkRecords(stuNum,stds)):
                 print(f"Average of student {stuNum} is {stds[stuNum-1].avg()}")
-            else:
-                print(f"Invalid Student Number Choice. Student Number should be between 1 to {len(stds)}")
 
         elif(choice==3):
             stuNum=int(input("Enter Student Number:"))
-            if(stuNum>=0 and stuNum<=len(stds)):
+            if(checkRecords(stuNum,stds)):
                 print(f"Details of student {stuNum}:\n {stds[stuNum-1].display()}")
-            else:
-                print(f"Invalid Student Number Choice. Student Number should be between 1 to {len(stds)}")
 
         else:
             print("Program Stopped")
