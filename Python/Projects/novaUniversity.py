@@ -53,6 +53,7 @@ def studentRegistrationMenu():
                 updateStudentDetails(studentId)
 
             case '4':
+                print("Returning to main menu")
                 return
             
             case _:
@@ -73,14 +74,62 @@ def studentSearchMenu():
 def studentCourseRegistrationMenu():
     while(True):
         print("---------- Course Registration ----------")
-        studentId=input("Enter Student ID for Course Registration:")
-        
-        if studentExist(studentId):
-            courseList=students[studentId]['coursesRegistered']
-            registerCourse(courseList)
-            return
-        
-        print("Student ID does not exist!")        
+        print("1. Register Course")
+        print("2. Display Registered Courses")
+        print("3. Remove Course")
+        print("4. Course Overlap Analysis")
+        print("5. Back to Main Menu")
+
+        choice=input("Enter your choice: ")
+
+        match choice:
+
+            case '1':
+                studentId=input("Enter Student ID for Course Registration: ")
+
+                if studentExist(studentId):
+                    courseList=students[studentId]['coursesRegistered']
+                    registerCourse(courseList)
+                else:
+                    print("Student ID does not exist!")
+
+
+            case '2':
+                studentId=input("Enter Student ID to display courses: ")
+
+                if studentExist(studentId):
+                    courseList=students[studentId]['coursesRegistered']
+
+                    if len(courseList)==0:
+                        print("Student is not registered for any course.")
+                    else:
+                        print("Registered Courses:")
+                        for course in courseList:
+                            print(course)
+                else:
+                    print("Student ID does not exist!")
+
+
+            case '3':
+                studentId=input("Enter Student ID to remove course: ")
+
+                if studentExist(studentId):
+                        removeCourse(studentId)
+                else:
+                    print("Student ID does not exist!")
+
+
+            case '4':
+                courseOverlapAnalysis()
+
+
+            case '5':
+                print("Returning to main menu.")
+                return
+
+
+            case _:
+                print("Invalid choice!")       
 
 def studentAttendanceMenu():
     while(True):
@@ -130,7 +179,7 @@ def studentAttendanceMenu():
                 executed=False
                 for student in students:
                     if(not checkSemesterEligibility(student)):
-                        print(f"{student}\t\t{students[student]['name']}\t\t{students[student]['attendance']}\t\tNot Eligible")
+                        print(f"{student:<15}{students[student]['name']:<20}{students[student]['attendance']:<15}{'Not Eligible':<15}")
                         executed=True
                 if(not executed): print("No students are below the required attendance.")
                 
@@ -144,6 +193,7 @@ def studentAttendanceMenu():
                 print(f"Total Student Count: {len(students)}\nCount of Eligible Students for Semester Examination: {eligibleStudents}")
 
             case '5':
+                print("Returning to main menu.")
                 return
 
             case _:
@@ -217,7 +267,7 @@ def studentsMarksMenu():
                             else:
                                 print("Invalid choice!")
                     else:
-                        print("Marks are already entered. Update the marks if needed.")
+                        print("Marks are not entered. Enter the marks first.")
                 else:
                     print("Students ID does not exist!")
 
@@ -228,20 +278,23 @@ def studentsMarksMenu():
                     if not len(students[studentId]['marks'])==0:
                         print(f"Student name: {students[studentId]['name']}")
 
-                        totalMarks=0
-                        totalCourse=len(students[studentId]['marks'])
+                        totMarks=totalMarks(studentId)
                         failedSubjects=[]
 
+                        print("-" * 40)
+                        print(f"{'Subject':<20}{'Mark':<10}")
+                        print("-" * 40)
+
                         for course in students[studentId]['marks']:
-                            mark=students[studentId]['marks'][course]
-
-                            print(f"{course}: {mark}")
-
+                            mark = students[studentId]['marks'][course]
+                            print(f"{course:<20}{mark:<10}")
                             if(examResult(mark)=="F"): failedSubjects.append(course)
-
-                            totalMarks+=mark
-
-                        print(f"Total Mark: {totalMarks}\nAverage Mark: {totalMarks/totalCourse}")
+                        
+                        avg=avgMarks(totMarks,studentId)
+                        
+                        print("-" * 40)
+                        print(f"Total Mark: {totMarks}")
+                        print(f"Average Mark: {avg}")
 
                         if not len(failedSubjects)==0:
                             print(f"Failed subjects: {failedSubjects}")
@@ -254,17 +307,343 @@ def studentsMarksMenu():
                     print("Students ID does not exist!")
 
             case '5':
-                print()
+                print("Overall Average Marks for Each Subject")
+                print("-" * 65)
+                print(f"{'Subject':<15}{'No. of Students':<20}{'Average Mark':<15}")
+                print("-" * 65)
+
+                if len(excelMarks) == 0:
+                    print(f"{'Excel':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'Excel':<15}{len(excelMarks):<20}{sum(excelMarks)/len(excelMarks):<15.2f}")
+
+                if len(powerBIMarks) == 0:
+                    print(f"{'Power BI':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'Power BI':<15}{len(powerBIMarks):<20}{sum(powerBIMarks)/len(powerBIMarks):<15.2f}")
+
+                if len(pythonMarks) == 0:
+                    print(f"{'Python':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'Python':<15}{len(pythonMarks):<20}{sum(pythonMarks)/len(pythonMarks):<15.2f}")
+
+                if len(sqlMarks) == 0:
+                    print(f"{'SQL':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'SQL':<15}{len(sqlMarks):<20}{sum(sqlMarks)/len(sqlMarks):<15.2f}")
+
+                print("-" * 65)
 
             case '6':
-                pass
+                print("Highest Marks for Each Subject")
+                print("-" * 65)
+                print(f"{'Subject':<15}{'No. of Students':<20}{'Highest Mark':<15}")
+                print("-" * 65)
+
+                if len(excelMarks) == 0:
+                    print(f"{'Excel':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'Excel':<15}{len(excelMarks):<20}{max(excelMarks):<15}")
+
+                if len(powerBIMarks) == 0:
+                    print(f"{'Power BI':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'Power BI':<15}{len(powerBIMarks):<20}{max(powerBIMarks):<15}")
+
+                if len(pythonMarks) == 0:
+                    print(f"{'Python':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'Python':<15}{len(pythonMarks):<20}{max(pythonMarks):<15}")
+
+                if len(sqlMarks) == 0:
+                    print(f"{'SQL':<15}{'0':<20}{'Not Available':<15}")
+                else:
+                    print(f"{'SQL':<15}{len(sqlMarks):<20}{max(sqlMarks):<15}")
+
+                print("-" * 65)
 
             case '7':
+                print("Returning to main menu")
                 return
             
             case _:
                 print(" Invalid choice!")
 
+def studentResultMenu():
+    while(True):
+            print("------------ Student Result -------------")
+
+            print("1. View student result\n" \
+            "2. Process all student results\n" \
+            "3. Back to main menu")
+
+            choice=input("Enter your choice:")
+
+            match choice:
+                case '1':
+                    studentId=input("Enter Student ID to view result:")
+            
+                    if studentExist(studentId):
+                        if not len(students[studentId]['marks'])==0:
+                            print(f"Student name: {students[studentId]['name']}")
+
+                            totMarks=totalMarks(studentId)
+
+                            print("-" * 50)
+                            print(f"{'Subject':<20}{'Mark':<10}{'Grade':<10}")
+                            print("-" * 50)
+
+                            for course in students[studentId]['marks']:
+                                mark = students[studentId]['marks'][course]
+                                print(f"{course:<20}{mark:<10}{examResult(mark):<10}")
+
+                            print("-" * 50)
+                            avg=avgMarks(totMarks,studentId)
+
+                            print(f"Total Mark   : {totMarks}")
+                            print(f"Average Mark : {avg:.2f}")
+                            print(f"Overall Grade: {examResult(avg)}")
+
+                        else:
+                            print("No marks are entered to display.")
+                        return
+                    
+                    print("Student ID does not exist!")
+
+                case '2':
+                    if not len(students)==0:
+                        print("-" * 120)
+                        print(f"{'Student ID':<15}{'Student Name':<20}{'Department':<15}{'Eligibility':<18}{'Average':<12}{'Grade':<10}{'Result':<10}")
+                        print("-" * 120)
+                        for student in students:
+                            if len(students[student]['marks'])==0:
+                                noData="No Data"
+                                eligibility = "Eligible" if checkSemesterEligibility(student) else "Not Eligible"
+                                print(f"{student:<15}"
+                                    f"{students[student]['name']:<20}"
+                                    f"{students[student]['department']:<15}"
+                                    f"{eligibility:<18}"
+                                    f"{noData:<12}"
+                                    f"{noData:<10}"
+                                    f"{noData:<10}")
+                            else:
+                                totMarks = totalMarks(student)
+                                avg = avgMarks(totMarks, student)
+
+                                eligibility = "Eligible" if checkSemesterEligibility(student) else "Not Eligible"
+                                grade = examResult(avg)
+                                result = "Fail" if grade == "F" else "Pass"
+
+                                print(f"{student:<15}"
+                                    f"{students[student]['name']:<20}"
+                                    f"{students[student]['department']:<15}"
+                                    f"{eligibility:<18}"
+                                    f"{avg:<12.2f}"
+                                    f"{grade:<10}"
+                                    f"{result:<10}")
+
+                        print("-" * 120)
+                    else:
+                        print("There are no student records stored.")
+
+                case '3':
+                    print("Returning to main menu.")
+                    break
+
+                case _:
+                    print("Invalid choice!")
+
+def departmentInfoMenu():
+    while(True):
+        print("---------- Department Information ----------")
+        print("1. Display Available Departments")
+        print("2. Display Students by Department")
+        print("3. Back to Main Menu")
+
+        choice=input("Enter your choice: ")
+
+        match choice:
+
+            case '1':
+                print("\n---------- Available Departments ----------")
+                print(f"{'Code':<10}{'Department Name'}")
+                print("-" * 60)
+
+                for code, name in departments.items():
+                    print(f"{code:<10}{name}")
+
+            case '2':
+                print("\n---------- Select Department ----------")
+
+                i=1
+                for code, name in departments.items():
+                    print(f"{i}. {code} - {name}")
+                    i+=1
+
+                choice=input("Choose a department: ")
+
+                if choice.isdigit():
+                    choice=int(choice)
+
+                    if 1 <= choice <= len(depts):
+                        selectedDepartment=depts[choice-1]
+
+                        print(f"\n---------- {selectedDepartment} Students ----------")
+                        print(f"{'Student ID':<20}{'Student Name':<20}")
+                        print("-" * 40)
+
+                        studentsFound=False
+
+                        for studentId in students:
+                            if students[studentId]["department"] == selectedDepartment:
+                                print(f"{studentId:<20}{students[studentId]['name']:<20}")
+                                studentsFound=True
+
+                        if not studentsFound:
+                            print("No students are registered under this department.")
+
+                    else:
+                        print("Invalid department choice!")
+
+                else:
+                    print("Invalid choice!")
+
+            case '3':
+                return
+
+            case _:
+                print("Invalid choice!")
+
+def studentStatisticsMenu():
+    while(True):
+        print("---------- Student Statistics ----------")
+        print("1. Total Number of Students")
+        print("2. Department-wise Student Count")
+        print("3. Exam Eligible Students")
+        print("4. Failed Students")
+        print("5. Highest Average Mark")
+        print("6. Lowest Average Mark")
+        print("7. Overall Batch Average")
+        print("8. Unique Departments Represented")
+        print("9. Students Registered for a Course")
+        print("10. Back to Main Menu")
+
+        choice=input("Enter your choice: ")
+
+        match choice:
+            case '1':
+                print(f"Total Number of Students: {len(students)}")
+
+            case '2':
+                print("---------- Department-wise Student Count ----------")
+                print(f"{'Department':<15}{'Student Count':<15}")
+                print("-" * 30)
+
+                for department in depts:
+                    count=0
+
+                    for studentId in students:
+                        if students[studentId]['department'] == department:
+                            count+=1
+
+                    print(f"{department:<15}{count:<15}")
+
+            case '3':
+                eligibleStudents=0
+
+                for studentId in students:
+                    if checkSemesterEligibility(studentId):
+                        eligibleStudents+=1
+
+                print(f"Students Eligible for Semester Examination: {eligibleStudents}")
+
+            case '4':
+                failedStudents=0
+
+                for studentId in students:
+                    if len(students[studentId]['marks']) == 0:
+                        continue
+
+                    studentFailed=False
+
+                    for course in students[studentId]['marks']:
+                        mark=students[studentId]['marks'][course]
+
+                        if examResult(mark) == "F":
+                            studentFailed=True
+                            break
+
+                    if studentFailed:
+                        failedStudents+=1
+
+                print(f"Students who failed: {failedStudents}")
+
+            case '5':
+                highestAverage=0
+                highestStudent=""
+
+                for studentId in students:
+
+                    if len(students[studentId]['marks']) == 0:
+                        continue
+
+                    totMarks=totalMarks(studentId)
+                    average=avgMarks(totMarks, studentId)
+
+                    if average > highestAverage:
+                        highestAverage=average
+                        highestStudent=studentId
+
+                if highestStudent=="":
+                    print("No student marks are available.")
+                else:
+                    print("---------- Highest Average Mark ----------")
+                    print(f"{'Student ID':<20}{'Student Name':<20}{'Average':<10}")
+                    print("-" * 50)
+                    print(f"{highestStudent:<20}"
+                        f"{students[highestStudent]['name']:<20}"
+                        f"{highestAverage:<10.2f}")
+
+            case '6':
+                lowestAverage=101
+                lowestStudent=""
+
+                for studentId in students:
+
+                    if len(students[studentId]['marks']) == 0:
+                        continue
+
+                    totMarks=totalMarks(studentId)
+                    average=avgMarks(totMarks, studentId)
+
+                    if average < lowestAverage:
+                        lowestAverage=average
+                        lowestStudent=studentId
+
+                if lowestStudent=="":
+                    print("No student marks are available.")
+                else:
+                    print("---------- Lowest Average Mark ----------")
+                    print(f"{'Student ID':<20}{'Student Name':<20}{'Average':<10}")
+                    print("-" * 50)
+                    print(f"{lowestStudent:<20}"
+                        f"{students[lowestStudent]['name']:<20}"
+                        f"{lowestAverage:<10.2f}")
+
+            case '7':
+                pass
+
+            case '8':
+                pass
+
+            case '9':
+                pass
+
+            case '10':
+                return
+
+            case _:
+                print("Invalid choice!")
 
 # Validation
 def validateYear():
@@ -492,6 +871,170 @@ def registerCourse(courseList):
         
         print("Invalid choice!")
 
+def removeCourse(studentId):
+    courseList=students[studentId]['coursesRegistered']
+
+    if len(courseList)==0:
+        print("Student is not registered for any course.")
+        return
+
+    print("Registered Courses:")
+
+    courseListDisplay=list(courseList)
+
+    for i in range(len(courseListDisplay)):
+        print(f"{i + 1}. {courseListDisplay[i]}")
+
+    choice=input("Choose the course to remove: ")
+
+    if choice.isdigit():
+        choice=int(choice)
+
+        if 1 <= choice <= len(courseListDisplay):
+            course=courseListDisplay[choice - 1]
+
+            courseList.remove(course)
+
+            if course in students[studentId]['marks']:
+                oldMark=students[studentId]['marks'][course]
+                del students[studentId]['marks'][course]
+
+                if course == "Python":
+                    pythonMarks.remove(oldMark)
+                elif course == "SQL":
+                    sqlMarks.remove(oldMark)
+                elif course == "Excel":
+                    excelMarks.remove(oldMark)
+                elif course == "Power BI":
+                    powerBIMarks.remove(oldMark)
+
+            print(f"{course} removed successfully!")
+            return
+
+    print("Invalid choice!")
+
+
+def courseOverlapAnalysis():
+    while(True):
+        print("---------- Course Overlap Analysis ----------")
+        print("1. Students registered for both courses\n" \
+        "2. Students registered for first course but not second\n" \
+        "3. Students registered for at least one of the courses\n" \
+        "4. Students registered for exactly one of the courses\n" \
+        "5. Check whether two student groups are completely different\n" \
+        "6. Back")
+
+        choice=input("Enter your choice: ")
+
+        match choice:
+
+            case '1':
+                firstCourse=input("Enter first course: ")
+                secondCourse=input("Enter second course: ")
+
+                firstStudents=set()
+                secondStudents=set()
+
+                for studentId in students:
+                    if firstCourse in students[studentId]['coursesRegistered']:
+                        firstStudents.add(studentId)
+
+                    if secondCourse in students[studentId]['coursesRegistered']:
+                        secondStudents.add(studentId)
+
+                commonStudents=firstStudents & secondStudents
+
+                print(f"Students registered for both {firstCourse} and {secondCourse}:")
+                print(commonStudents)
+
+
+            case '2':
+                firstCourse=input("Enter first course: ")
+                secondCourse=input("Enter second course: ")
+
+                firstStudents=set()
+                secondStudents=set()
+
+                for studentId in students:
+                    if firstCourse in students[studentId]['coursesRegistered']:
+                        firstStudents.add(studentId)
+
+                    if secondCourse in students[studentId]['coursesRegistered']:
+                        secondStudents.add(studentId)
+
+                studentsOnlyInFirst=firstStudents - secondStudents
+
+                print(f"Students registered for {firstCourse} but not {secondCourse}:")
+                print(studentsOnlyInFirst)
+
+
+            case '3':
+                firstCourse=input("Enter first course: ")
+                secondCourse=input("Enter second course: ")
+
+                firstStudents=set()
+                secondStudents=set()
+
+                for studentId in students:
+                    if firstCourse in students[studentId]['coursesRegistered']:
+                        firstStudents.add(studentId)
+
+                    if secondCourse in students[studentId]['coursesRegistered']:
+                        secondStudents.add(studentId)
+
+                atLeastOne=firstStudents | secondStudents
+
+                print(f"Students registered for at least one of {firstCourse} or {secondCourse}:")
+                print(atLeastOne)
+
+
+            case '4':
+                firstCourse=input("Enter first course: ")
+                secondCourse=input("Enter second course: ")
+
+                firstStudents=set()
+                secondStudents=set()
+
+                for studentId in students:
+                    if firstCourse in students[studentId]['coursesRegistered']:
+                        firstStudents.add(studentId)
+
+                    if secondCourse in students[studentId]['coursesRegistered']:
+                        secondStudents.add(studentId)
+
+                exactlyOne=firstStudents ^ secondStudents
+
+                print(f"Students registered for exactly one of {firstCourse} and {secondCourse}:")
+                print(exactlyOne)
+
+            case '5':
+                firstCourse=input("Enter first course: ")
+                secondCourse=input("Enter second course: ")
+
+                firstStudents=set()
+                secondStudents=set()
+
+                for studentId in students:
+                    if firstCourse in students[studentId]['coursesRegistered']:
+                        firstStudents.add(studentId)
+
+                    if secondCourse in students[studentId]['coursesRegistered']:
+                        secondStudents.add(studentId)
+
+                if firstStudents.isdisjoint(secondStudents):
+                    print("The two student groups are completely different.")
+                else:
+                    print("The two student groups are not completely different.")
+
+
+            case '6':
+                print("Returning to course registration menu.")
+                return
+
+
+            case _:
+                print("Invalid choice!")
+
 def checkSemesterEligibility(studentId):
     return students[studentId]['attendance']>=75    
 
@@ -525,6 +1068,17 @@ def examResult(mark):
         return "E"
     else:
         return "F"
+    
+def totalMarks(studentId):
+    totalMarks=0
+
+    for course in students[studentId]['marks']:
+        totalMarks+=students[studentId]['marks'][course]
+
+    return totalMarks
+
+def avgMarks(marks,studentId):
+    return marks/len(students[studentId]['coursesRegistered'])
 
 while(True): 
     print("-----------------------------------------")
@@ -561,13 +1115,13 @@ while(True):
             studentsMarksMenu()
 
         case '6':
-            pass
+            studentResultMenu()
 
         case '7':
-            pass
+            departmentInfoMenu()
 
         case '8':
-            pass
+            studentStatisticsMenu()
 
         case '9':
             pass
